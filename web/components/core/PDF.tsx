@@ -1,12 +1,14 @@
 import {
 	PageLayout,
+	SetRenderRange,
 	SpecialZoomLevel,
 	Spinner,
 	Viewer,
+	VisiblePagesRange,
 	Worker,
 } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { memo } from 'react';
+import  { memo, useCallback } from 'react';
 
 const pageLayout: PageLayout = {
 	buildPageStyles: () => ({
@@ -25,6 +27,17 @@ const renderLoader = (_percentages: number) => (
 		<Spinner size="lg" />
 	</div>
 );
+// Another usage: render the first 20 pages initially
+const setRenderRange: SetRenderRange = useCallback((visiblePagesRange: VisiblePagesRange) => {
+    return {
+        startPage: visiblePagesRange.endPage <= 1 ? 0 : visiblePagesRange.startPage - 5,
+        endPage:
+            visiblePagesRange.startPage <= 1
+                ? Math.max(1, visiblePagesRange.endPage + 5)
+                : visiblePagesRange.endPage + 5,
+    };
+}, []);
+
 
 const PDF = memo(({ path }: { path: string }) => {
 	typeof window !== 'undefined' && (window.devicePixelRatio = 2);
@@ -33,6 +46,7 @@ const PDF = memo(({ path }: { path: string }) => {
 		<>
 			<Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js">
 				<Viewer
+					setRenderRange={setRenderRange}
 					fileUrl={path}
 					defaultScale={SpecialZoomLevel.PageWidth}
 					pageLayout={pageLayout}
