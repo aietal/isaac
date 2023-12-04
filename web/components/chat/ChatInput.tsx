@@ -157,7 +157,7 @@ const ChatInput = ({ sessionId, minimized }: ChatInputProps) => {
 				<TextareaChat
 					id="isaac-chat-input"
 					className={clsx(
-						'placeholder:pt-1 overflow-y-hidden',
+						'placeholder:pt-1 overflow-y-auto',
 						minimized ? 'text-sm' : 'text-md',
 					)}
 					ref={inputRef}
