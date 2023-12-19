@@ -257,7 +257,7 @@ export default function ToolbarPlugin({ documentName }) {
 
 		source.addEventListener('message', function (e) {
 			const binaryString = atob(e.data);
-				const eventMessage = decodeURIComponent(escape(binaryString))
+			const eventMessage = decodeURIComponent(escape(binaryString));
 			if (eventMessage === '[DONE]') {
 				source.close();
 			} else {

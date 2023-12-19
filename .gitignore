@@ -20,11 +20,11 @@
 /coverage
 
 # next.js
-/web/.next/
-/web/out/
+apps/web/.next/
+apps/web/out/
 
 # production
-/web/build
+apps/web/build
 
 # misc
 .DS_Store
@@ -45,12 +45,12 @@ yarn-error.log*
 /web/.vercel
 
 # typescript
-/web/*.tsbuildinfo
-/web/next-env.d.ts
+apps/web/*.tsbuildinfo
+apps/web/next-env.d.ts
 
 # Pupeteer Cache
-/web/.cache/
-/web/.cache/
+apps/web/.cache/
+apps/web/.cache/
 
 # Unlighthouse
 
@@ -58,12 +58,16 @@ yarn-error.log*
 
 
 # Python specific ignores for 'api' subdirectory
-/api/app/__pycache__/
-/api/*.pyc
-/api/*.pyo
-/api/*~ 
-/api/env
+apps/api/app/__pycache__/
+apps/api/*.pyc
+apps/api/*.pyo
+apps/api/*~ 
+apps/api/env
 
-/web/.env.test
-/web/.env.development
-/web/.env.production
+apps/web/.env.test
+apps/web/.env.development
+apps/web/.env.production
+
+
+# turborepo
+.turbo
