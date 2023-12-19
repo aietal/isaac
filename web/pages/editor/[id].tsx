@@ -3,6 +3,7 @@ import ChatTab from '@components/chat/ChatTab';
 import EditorEmptyState from '@components/editor/EditorEmptyState';
 import AppLayout from '@components/editor/EditorLayout';
 import LiteratureSearchTab from '@components/literature/LiteratureSearchTab';
+import ReferenceListTab from '@components/literature/ReferenceListTab';
 import { Grammarly } from '@grammarly/editor-sdk-react';
 import useHandleToastQuery from '@hooks/misc/useHandleToastQuery';
 import useDocumentTabs, { TabType } from '@hooks/useDocumentTabs';
@@ -81,6 +82,13 @@ const EditorPage = () => {
 									key={`chat-tab-${idx}`}
 									active={tab.active}
 									sessionId={tab.source}
+								/>
+							);
+						} else if (tab.type === TabType.SavedReference) {
+							return (
+								<ReferenceListTab
+									key={TabType.SavedReference}
+									active={tab.active}
 								/>
 							);
 						}

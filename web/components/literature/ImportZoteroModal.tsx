@@ -63,6 +63,7 @@ const ImportZoteroModal = () => {
 					sourceId: i.key,
 					source: ReferenceSource.ZOTERO,
 					url: i.data.url,
+					abstract: i.data.abstractNote,
 				};
 			}),
 		});

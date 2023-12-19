@@ -1,3 +1,4 @@
+import { ManipulateTextMethods } from '@utils/manipulateTextMap';
 import { RangeSelection } from 'lexical';
 import { ChatMessage, LiteratureSource } from 'types/chat';
 import { create } from 'zustand';
@@ -9,6 +10,7 @@ interface AIAssistantState {
 	Y: number;
 	cachedSelection?: RangeSelection;
 	AITextOutput: string;
+	AIOperation?: ManipulateTextMethods;
 	literatureReferenceOutput?: LiteratureSource[];
 	literatureReferenceOutputLoading?: boolean;
 	actions: {
@@ -16,6 +18,7 @@ interface AIAssistantState {
 		closeModal: () => void;
 		setCursorPosition: (X: number, Y: number) => void;
 		setAITextOutput: (AIOutput: string) => void;
+		setAIOperation: (operation: ManipulateTextMethods) => void;
 		setCachedSelection: (cachedSelection: RangeSelection) => void;
 		setLiteratureReferenceOutput: (cachedSelection: any[]) => void;
 		setLiteratureReferenceOutputLoading: (bool: boolean) => void;
@@ -32,6 +35,7 @@ const useAIAssistantStore = create<AIAssistantState>(set => ({
 	literatureReferenceOutputLoading: false,
 	X: 0,
 	Y: 0,
+	AIOperation: undefined,
 	actions: {
 		openModal: () => set({ open: true }),
 		closeModal: () => set({ open: false }),
@@ -40,6 +44,9 @@ const useAIAssistantStore = create<AIAssistantState>(set => ({
 		},
 		setAITextOutput: (AITextOutput: string) => {
 			set({ AITextOutput });
+		},
+		setAIOperation: AIOperation => {
+			set({ AIOperation });
 		},
 		setLiteratureReferenceOutput: literatureReferenceOutput => {
 			set({

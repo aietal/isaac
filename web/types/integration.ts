@@ -59,5 +59,6 @@ export type ZoteroDocument = {
 		creators: { firstName: string; lastName: string }[];
 		date: string;
 		url: string;
+		abstractNote: string;
 	};
 };

@@ -148,6 +148,22 @@ export const explainPrompt = ({
 
   ${selection}`;
 
+export const textToBulletPrompt = ({
+	selection,
+	editorLanguage,
+}: PromptBuilderPayload) =>
+	`
+  \`no quotes\`
+  \`no explanations\`
+  \`no prompt\`
+  \`no self-reference\`
+  \`no apologies\`
+  \`no filler\`
+  \`just answer\`
+  Rephrase the text content in bullet short and concise bullet points. You must respond in ${editorLanguage}:
+
+  ${selection}`;
+
 export const customPrompt = ({
 	selection,
 	additionalContext,

@@ -12,6 +12,7 @@ export enum TabType {
 	UserUpload = 'UserUpload',
 	Chat = 'Chat',
 	LiteratureSearch = 'LiteratureSearch',
+	SavedReference = 'SavedReference',
 }
 
 export const paperTypeTabs = [
@@ -41,6 +42,7 @@ type OpenDocumentPayload = {
 export enum UniqueTabSources {
 	NEW_CHAT = 'new-chat',
 	NEW_LIT_SEARCH = 'new-lit-search',
+	SAVED_REFERENCE_TAB = 'saved-ref-tab',
 }
 
 // ? Is this the right approach ? should I be using Zustand state

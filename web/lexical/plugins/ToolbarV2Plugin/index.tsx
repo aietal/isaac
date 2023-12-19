@@ -38,6 +38,7 @@ import {
 	Heading3,
 	Heading4,
 	ImagePlus,
+	Info,
 	Italic,
 	List,
 	ListOrdered,
@@ -55,6 +56,7 @@ import {
 	useMemo,
 	useState,
 } from 'react';
+import DocumentStatsPopover from './DocumentStatsPopover';
 
 type BlockTypeData = {
 	name: string;
@@ -119,6 +121,9 @@ export default function ToolbarV2Plugin() {
 			<BlockTypeButtons />
 			<FormatButtons />
 			<InsertButtons />
+			<DocumentStatsPopover>
+				<ToolbarButton label="Document statistics" Icon={Info} />
+			</DocumentStatsPopover>
 		</div>
 	);
 }
@@ -413,7 +418,20 @@ function InsertButtons() {
 
 	return (
 		<Group>
-			<ToolbarButton label="Image" Icon={ImagePlus} onClick={showFileDialog} />
+			<>
+				<ToolbarButton
+					label="Image"
+					Icon={ImagePlus}
+					onClick={showFileDialog}
+				/>
+				<input
+					type="file"
+					id="toolbar_file_input"
+					accept="image/png, image/gif, image/jpeg"
+					className="hidden"
+					onChange={e => handleInsertImage(e.target.files)}
+				/>
+			</>
 			<ToolbarButton label="Table" Icon={Table} onClick={() => addTable()} />
 			<ToolbarButton
 				label="Equation"
@@ -424,13 +442,6 @@ function InsertButtons() {
 				label="Divider"
 				Icon={MinusSquare}
 				onClick={insertDivider}
-			/>
-			<input
-				type="file"
-				id="toolbar_file_input"
-				accept="image/png, image/gif, image/jpeg"
-				className="hidden"
-				onChange={e => handleInsertImage(e.target.files)}
 			/>
 		</Group>
 	);

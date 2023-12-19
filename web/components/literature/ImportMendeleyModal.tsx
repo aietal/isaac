@@ -80,6 +80,8 @@ const ImportMendeleyModal = () => {
 					type,
 					sourceId: i.id,
 					source: ReferenceSource.MENDELEY,
+					abstract: i.abstract,
+					pdf: null,
 				};
 			}),
 		});
@@ -110,7 +112,9 @@ const ImportMendeleyModal = () => {
 				</DialogHeader>
 				<FolderContainer>{folderAccordions}</FolderContainer>
 				<DialogFooter>
-					<Button onClick={onSubmit}>Import</Button>
+					<Button disabled={selectedDocs.length === 0} onClick={onSubmit}>
+						Import
+					</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

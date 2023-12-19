@@ -59,6 +59,8 @@ const useFindTextSources = () => {
 			authors: lit.authors,
 			year: lit.year,
 			doi: lit.externalIds.DOI,
+			pdf: lit.openAccessPdf.url,
+			abstract: lit.abstract,
 		}));
 
 		setLiteratureReferenceOutput(sources);

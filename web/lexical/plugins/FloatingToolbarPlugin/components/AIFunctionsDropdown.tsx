@@ -4,6 +4,7 @@ import { $getSelection } from 'lexical';
 import {
 	HelpCircle,
 	List,
+	ListTree,
 	Maximize2,
 	Minimize2,
 	Pencil,
@@ -20,22 +21,14 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-} from '@components/ui/tooltip';
 import useLexicalEditorStore from '@context/lexicalEditor.store';
 import useAIDetector from '@hooks/api/isaac/useAIDetector';
 import useFindTextSources from '@hooks/api/isaac/useFindTextSources';
 import useManipulationText from '@hooks/api/isaac/useManipulateText';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { TooltipTrigger } from '@radix-ui/react-tooltip';
 import { ManipulateTextMethods } from '@utils/manipulateTextMap';
-import clsx from 'clsx';
 import { Sparkles } from 'lucide-react';
 
 const AIFunctionsDropdown = () => {
@@ -149,12 +142,27 @@ const AIFunctionsDropdown = () => {
 
 						<DropdownMenuItem
 							onClick={() =>
-								manipulateText(selectedText, ManipulateTextMethods.EXPLAIN)
+								manipulateText(
+									selectedText,
+									ManipulateTextMethods.BULLET_TO_TEXT,
+								)
 							}
-							aria-label="Bullets to Text"
+							aria-label="Bullets to text"
+						>
+							<ListTree size={16} className="mr-2 h-4 w-4" />
+							Bullets to text
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() =>
+								manipulateText(
+									selectedText,
+									ManipulateTextMethods.TEXT_TO_BULLET,
+								)
+							}
+							aria-label="Bullets to text"
 						>
 							<List size={16} className="mr-2 h-4 w-4" />
-							Bullets to Text
+							Text to bullets
 						</DropdownMenuItem>
 						<DropdownMenuItem
 							onClick={() =>
@@ -174,7 +182,7 @@ const AIFunctionsDropdown = () => {
 							aria-label="Bullets to Text"
 						>
 							<Pencil size={16} className="mr-2 h-4 w-4" />
-							Custom
+							Custom prompt
 						</DropdownMenuItem>
 
 						<DropdownMenuLabel>Utilities</DropdownMenuLabel>
@@ -194,7 +202,7 @@ const AIFunctionsDropdown = () => {
 							disabled={tooLong}
 						>
 							<Search size={16} className="mr-2 h-4 w-4" />
-							Find Sources
+							Find sources
 						</DropdownMenuItem>
 
 						<DropdownMenuItem

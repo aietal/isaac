@@ -30,6 +30,7 @@ import clsx from 'clsx';
 import {
 	ArrowDownLeft,
 	Book,
+	Bookmark,
 	BookUp,
 	ChevronRight,
 	FileText,
@@ -244,6 +245,7 @@ const TabItem = memo(({
 				{type === 'Document' && <FileText strokeWidth={1.4} size={18} />}
 				{type === 'LiteratureSearch' && <Search strokeWidth={1.4} size={18} />}
 				{type === 'Chat' && <MessageSquare strokeWidth={1.4} size={18} />}
+				{type === 'SavedReference' && <Bookmark strokeWidth={1.4} size={18} />}
 			</div>
 
 			<Tooltip>

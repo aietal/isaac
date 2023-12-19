@@ -3,101 +3,32 @@ import ImportZoteroModal from '@components/literature/ImportZoteroModal';
 import LiteratureSummaryPreview from '@components/literature/LiteratureSummaryPreview';
 import ReferenceList from '@components/literature/ReferenceList';
 import useLiteratureToPreview from '@components/literature/useLiteratureToPreview';
-import { Input } from '@components/ui/input';
 import { useLiteratureReferenceStore } from '@context/literatureReference.store';
-import { useUser } from '@context/user';
-import useGetEditorRouter from '@hooks/useGetEditorRouter';
-import { useGetReference, useGetUserUploads } from '@resources/editor-page';
-import Fuse from 'fuse.js';
-import { Search } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import {
-	ReferenceLiterature,
-	UploadedFile,
-} from 'types/literatureReference.type';
-
-export enum ReferenceSourceFilter {
-	ALL = 'ALL',
-	SAVED = 'SAVED',
-	UPLOADED = 'UPLOADED',
-}
+import useReferenceListOperation, {
+	ReferenceSourceFilter,
+} from '@hooks/api/useReferenceListOperation';
+import { TabType, UniqueTabSources } from '@hooks/useDocumentTabs';
+import { ArrowUpRight, Search } from 'lucide-react';
+import React, { useState } from 'react';
+import AddReferenceDropdown from './AddReferenceDropdown';
+import ReferenceExportButton from './ReferenceExportButton';
+import ReferenceSearchInput from './ReferenceSearchInput';
+import ReferenceSourceFilterDropdown from './ReferenceSourceFilterDropdown';
 
 const References = () => {
-	const { projectId } = useGetEditorRouter();
-	const { user } = useUser();
-	//
-	const [refSearchInput, setRefSearchInput] = useState<string>('');
-	const [referenceList, setReferenceList] = useState<ReferenceLiterature[]>();
-	const [uploadedReferenceList, setUploadedReferenceList] =
-		useState<UploadedFile[]>();
+	const {
+		openDocument,
+		setTargetDOI,
+		setRefSearchInput,
+		mergedItem,
+		filter,
+		setFilter,
+	} = useReferenceListOperation();
 
 	const targetDOI = useLiteratureReferenceStore(
 		s => s.savedReferenceDOIPreview,
 	);
-	const setTargetDOI = useLiteratureReferenceStore(
-		s => s.setSavedReferenceDOIPreview,
-	);
 	const { literaturePreview } = useLiteratureToPreview(targetDOI);
-
-	const { data: _referenceList } = useGetReference(projectId);
-	const { data: userUploads } = useGetUserUploads(user?.id, projectId);
-
-	// Clientside Filter for reference
-
-	const fuseInstances: Map<string, Fuse<any>> = new Map();
-	const getFuseInstance = (dataList: any[], keys: string[]) => {
-		const keyString = keys.join(',');
-		let fuse = fuseInstances.get(keyString);
-
-		if (!fuse) {
-			fuse = new Fuse(dataList, {
-				keys,
-				threshold: 0.4,
-				ignoreLocation: true,
-				shouldSort: false,
-			});
-			fuseInstances.set(keyString, fuse);
-		} else {
-			fuse.setCollection(dataList);
-		}
-
-		return fuse;
-	};
-
-	const performSearch = (
-		searchInput: string,
-		dataList: any[],
-		keys: string[],
-	) => {
-		if (
-			!searchInput ||
-			!dataList ||
-			!Array.isArray(dataList) ||
-			dataList.length === 0
-		) {
-			return dataList || [];
-		}
-
-		const fuse = getFuseInstance(dataList, keys);
-		return fuse.search(searchInput).map(f => f.item);
-	};
-
-	useEffect(() => {
-		const newReferenceList = performSearch(refSearchInput, _referenceList, [
-			'title',
-			'authors',
-		]);
-		setReferenceList(newReferenceList);
-	}, [refSearchInput, _referenceList]);
-
-	useEffect(() => {
-		const newUploadedReferenceList = performSearch(
-			refSearchInput,
-			userUploads,
-			['file_name', 'custom_citation.title'],
-		);
-		setUploadedReferenceList(newUploadedReferenceList);
-	}, [refSearchInput, userUploads]);
 
 	if (literaturePreview) {
 		return (
@@ -113,32 +44,46 @@ const References = () => {
 	return (
 		<div className="flex flex-col h-full w-full overflow-y-scroll scrollbar-hide bg-white dark:bg-black">
 			{/* HEADER */}
-			<p className="font-semibold text-sm flex gap-2 p-3 items-center">
-				Saved References
-			</p>
-
-			{/* SEARCH INPUT */}
-			<div className="flex flex-col gap-2  items-stretch">
-				<div className="flex items-center flex-wrap gap-2 mb-2 relative px-3">
-					<Input
-						onChange={e => setRefSearchInput(e.target.value)}
-						placeholder="Search your references..."
-						className="bg-white dark:bg-inherit"
+			<div className="flex justify-between items-top p-3">
+				<p className="font-semibold text-sm flex gap-2 items-center">
+					Saved References
+				</p>
+				<div>
+					<ArrowUpRight
+						size={20}
+						onClick={() => {
+							openDocument({
+								type: TabType.SavedReference,
+								source: UniqueTabSources.SAVED_REFERENCE_TAB,
+								label: 'References',
+							});
+						}}
+						className="text-gray-600 hover:text-isaac cursor-pointer hidden md:block"
+						strokeWidth={1}
 					/>
-					<button className="absolute right-4" type="submit">
-						<Search className="w-6 h-4" strokeWidth={1.4} />
-					</button>
 				</div>
-
-				{/* LIST */}
-				<ReferenceList
-					referenceList={referenceList}
-					uploadedReferenceList={uploadedReferenceList}
-					onClick={ref => {
-						setTargetDOI(ref.doi);
-					}}
-				/>
 			</div>
+
+			{/* SEARCH INPUT & FILTER */}
+			<div className="flex flex-col gap-2 items-stretch px-3 mb-3">
+				<ReferenceSearchInput onSearch={setRefSearchInput} />
+				<ReferenceSourceFilterDropdown
+					onFilterChange={setFilter}
+					currentFilter={filter}
+				/>
+				<div className="flex flex-wrap w-full gap-x-2">
+					<AddReferenceDropdown />
+					<ReferenceExportButton />
+				</div>
+			</div>
+
+			{/* LIST */}
+			<ReferenceList
+				list={mergedItem}
+				onClick={ref => {
+					setTargetDOI(ref.doi);
+				}}
+			/>
 			<ImportMendeleyModal />
 			<ImportZoteroModal />
 		</div>

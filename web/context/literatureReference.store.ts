@@ -12,7 +12,6 @@ type LiteratureReferenceStore = {
 	setLiteratureSearch: (payload: GetLiteraturePayload) => void;
 	referenceSection: ReferenceSection;
 	setReferenceSection: (section: ReferenceSection) => void;
-
 	literatureDOIPreview?: string;
 	setLiteratureDOIPreview: (doi: string, section?: ReferenceSection) => void;
 	savedReferenceDOIPreview?: string;

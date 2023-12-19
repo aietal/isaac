@@ -31,9 +31,8 @@ const useManipulationText = () => {
 	const editor = useLexicalEditorStore(s => s.activeEditor);
 	const systemPrompt = useIsaacSystemPrompt();
 	const { createNewAIOutput } = useAIOutput();
-	const { setAITextOutput, setCachedSelection, setOpen } = useAIAssistantStore(
-		state => state.actions,
-	);
+	const { setAITextOutput, setCachedSelection, setOpen, setAIOperation } =
+		useAIAssistantStore(state => state.actions);
 
 	const insertAIOutputComponent = useCallback(() => {
 		editor.update(() => {
@@ -57,6 +56,7 @@ const useManipulationText = () => {
 		additionalContext?: string,
 	) => {
 		mixpanel.track(manipulateTextMap[method].mixpanelTrack);
+		setAIOperation(method);
 
 		if (
 			user.is_subscribed === false &&
@@ -92,7 +92,7 @@ const useManipulationText = () => {
 		// Start Streaming
 		try {
 			source.addEventListener('message', async function (e) {
-				const eventMessage = atob(e.data)
+				const eventMessage = atob(e.data);
 				if (eventMessage === '[DONE]') {
 					source.close();
 

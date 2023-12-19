@@ -30,9 +30,7 @@ type Props = {
 export function CitationCommand({ open, setOpen, onSelectCallback }: Props) {
 	const { projectId } = useGetEditorRouter();
 	const { data: references } = useGetReference(projectId);
-	const userUploadsRef = useRef<UploadedFile[]>(
-		useLiteratureReferenceStore(s => s.userUploads),
-	);
+	const userUploadsRef = useRef<UploadedFile[]>([]);
 
 	const editor = useLexicalEditorStore(s => s.activeEditor);
 	const { citationStyle } = useCitationStyle();
@@ -43,24 +41,22 @@ export function CitationCommand({ open, setOpen, onSelectCallback }: Props) {
 				.from('uploads')
 				.select('*')
 				.eq('project_id', projectId);
-			const fileList: UploadedFile[] = [];
-			for (let i = 0; i < uploads?.length; i++) {
-				const file = uploads[i];
-				fileList.push({
-					id: file.id,
-					file_name: file.file_name,
-					status: file.status,
-					created_at: file.created_at,
-					citation: file.citation,
-					custom_citation: file.custom_citation,
-				});
-			}
+			const fileList: UploadedFile[] = uploads?.map(file => ({
+				id: file.id,
+				file_name: file.file_name,
+				status: file.status,
+				created_at: file.created_at,
+				citation: file.citation,
+				custom_citation: file.custom_citation,
+				abstract: file.abstract ? file.abstract : null,
+				tldr: file.tldr ? file.tldr : null,
+			})) || [];
 			userUploadsRef.current = fileList;
 		}
-		if (userUploadsRef.current.length === 0) {
+		if (!userUploadsRef.current.length) {
 			fetchMyAPI();
 		}
-	}, []);
+	}, [projectId]);
 
 	const onSelectOption = async (citation: CitationData) => {
 		editor.focus();

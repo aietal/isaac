@@ -43,6 +43,8 @@ export type ReferenceLiterature = {
 	type: ReferenceType;
 	tldr: string | null;
 	year: string;
+	abstract: string | null;
+	source: string | null;
 };
 
 export type PublicationTypes = 'Review' | 'JournalArticle' | 'Conference';
@@ -97,6 +99,8 @@ export type UploadedFile = {
 	created_at: string;
 	citation: { name: string; metadata: { year: string } } | null;
 	custom_citation?: CustomCitation;
+	abstract: string | null;
+	tldr: string | null;
 };
 
 export enum ReferenceType {

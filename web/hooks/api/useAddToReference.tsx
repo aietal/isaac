@@ -1,6 +1,6 @@
 import { supabase } from '@utils/supabase';
 import toast from 'react-hot-toast';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 type ReferencePayload = {
 	title: string;
@@ -11,6 +11,9 @@ type ReferencePayload = {
 	sourceId?: string;
 	source?: string;
 	url?: string;
+	tldr?: string;
+	abstract?: string;
+	pdf?: string;
 };
 
 const addReference = async ({

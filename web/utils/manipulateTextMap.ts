@@ -8,6 +8,7 @@ import {
 	PromptBuilderPayload,
 	shortenPrompt,
 	summarizationPrompt,
+	textToBulletPrompt,
 } from '@utils/promptBuilder';
 
 export enum ManipulateTextMethods {
@@ -17,6 +18,7 @@ export enum ManipulateTextMethods {
 	IMPROVE = 'IMPROVE',
 	SHORTEN = 'SHORTEN',
 	BULLET_TO_TEXT = 'BULLET_TO_TEXT',
+	TEXT_TO_BULLET = 'TEXT_TO_BULLET',
 	EXPLAIN = 'EXPLAIN',
 	CUSTOM = 'CUSTOM',
 }
@@ -77,8 +79,17 @@ export const manipulateTextMap: ManipulateTextMap = {
 			'Please re-phrase the following text without bullet points:',
 		assistantManipulationTitle:
 			'Here is a version of your highlighted text without the bullet points:',
-		endpoint: '/api/bullets',
+		endpoint: '/api/bullets', // TODO: Change to manipulate text endpoint
 		promptBuilder: bulletsToTextPrompt,
+	},
+	[ManipulateTextMethods.TEXT_TO_BULLET]: {
+		mixpanelTrack: 'Text to Bullet',
+		userManipulationTitle:
+			'Please re-phrase the following text with bullet points:',
+		assistantManipulationTitle:
+			'Here is a version of your highlighted text without the bullet points:',
+		endpoint: '/api/manipulate-text',
+		promptBuilder: textToBulletPrompt,
 	},
 	[ManipulateTextMethods.EXPLAIN]: {
 		mixpanelTrack: 'Explain',

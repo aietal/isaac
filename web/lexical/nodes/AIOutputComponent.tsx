@@ -1,27 +1,18 @@
-import { BellIcon, CheckIcon } from '@radix-ui/react-icons';
-
 import { cn } from '@components/lib/utils';
 import { Button } from '@components/ui/button';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@components/ui/card';
-
+import { Card, CardContent, CardFooter } from '@components/ui/card';
 import useAIAssistantStore from '@context/aiAssistant.store';
+import { $createListItemNode, $createListNode } from '@lexical/list';
 import { $isAIOutputNode } from '@lexical/nodes/AIOutputNode';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { motion } from 'framer-motion';
 import {
+	$createParagraphNode,
 	$createTextNode,
 	$getNodeByKey,
 	$getSelection,
 	$isRangeSelection,
 	$setSelection,
-	NodeKey,
 } from 'lexical';
 import { Check, Trash } from 'lucide-react';
 import { useCallback } from 'react';
@@ -55,7 +46,7 @@ const AIOutputComponent = ({
 	const AIOutput = useAIAssistantStore(state => state.AITextOutput);
 	const [editor] = useLexicalComposerContext();
 	const cachedSelection = useAIAssistantStore(state => state.cachedSelection);
-	const { setAITextOutput, setOpen } = useAIAssistantStore(
+	const { setAITextOutput, setOpen, setAIOperation } = useAIAssistantStore(
 		state => state.actions,
 	);
 
@@ -71,16 +62,36 @@ const AIOutputComponent = ({
 				return;
 			}
 
-			const aiOutputNode = $createTextNode(AIOutput.trim());
+			// handle list output, might need better detection algo, but this should suffice
+			if (AIOutput.startsWith('- ')) {
+				// bullet list
+				const listNode = $createListNode('bullet');
+				const items = AIOutput.split('- ');
 
-			selection.insertNodes([aiOutputNode]);
+				items.forEach(item => {
+					if (item) {
+						const listItem = $createListItemNode();
+						listItem.append($createTextNode(item));
+						listNode.append(listItem);
+					}
+				});
 
+				selection.insertNodes([listNode]);
+			} else if (AIOutput.startsWith('1. ')) {
+				// TODO: Handle for numbered list
+			} else {
+				const aiOutputNode = $createTextNode(AIOutput.trim());
+				selection.insertNodes([aiOutputNode]);
+			}
+
+			//* Clean up
 			const node = $getNodeByKey(nodeKey);
 
 			if ($isAIOutputNode(node)) {
 				node.remove();
 				setAITextOutput('');
 				setOpen(false);
+				setAIOperation(undefined);
 			}
 		});
 	};
@@ -93,6 +104,7 @@ const AIOutputComponent = ({
 				node.remove();
 				setAITextOutput('');
 				setOpen(false);
+				setAIOperation(undefined);
 			}
 		});
 	}, [editor, nodeKey, setAITextOutput]);

@@ -13,19 +13,16 @@ import { useUser } from '@context/user';
 import useUploadDocument from '@hooks/api/useUploadDocument';
 import { useGetUserIntegration } from '@hooks/api/useUserIntegration.get';
 import useGetEditorRouter from '@hooks/useGetEditorRouter';
-import { useTour } from '@reactour/tour';
 import { getMendeleyUserAuthorizationUrl } from '@resources/integration/mendeley';
-import {
-	BookmarkPlus,
-	FileUp,
-	FolderDown,
-	FolderInput,
-	Plus,
-} from 'lucide-react';
+import { BookmarkPlus, FileUp, FolderInput } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
-const AddReferenceDropdown = () => {
+type Props = {
+	displayAsButtons?: boolean;
+};
+
+const AddReferenceDropdown = ({ displayAsButtons }: Props) => {
 	const { data: userIntegration } = useGetUserIntegration();
 	const { projectId } = useGetEditorRouter();
 	// const { isOpen: tutorialMode, setCurrentStep } = useTour();
@@ -51,17 +48,13 @@ const AddReferenceDropdown = () => {
 		},
 	});
 
-	// const handleSearchOptionClick = () => {
-	// 	setReferenceSection(ReferenceSection.SEARCH_LITERATURE);
-	// 	tutorialMode && setCurrentStep(p => p + 1);
-	// };
-
 	const handleUploadOptionClick: React.ChangeEventHandler<
 		HTMLInputElement
 	> = async e => {
 		await uploadFiles(e.target.files);
 		setIsOpen(false);
 	};
+
 	const handleMendeleyImportClick = () => {
 		if (userIntegration?.mendeley?.access_token) {
 			// Open Modal
@@ -82,6 +75,38 @@ const AddReferenceDropdown = () => {
 			window.location.href = `/api/auth/zotero?userId=${userId}&projectId=${projectId}`;
 		}
 	};
+
+	if (displayAsButtons) {
+		return (
+			<div className="flex gap-2">
+				<Button
+					variant="ghost"
+					size="xs"
+					disabled={isUploading}
+					className="relative"
+				>
+					<FileUp size={18} strokeWidth={1.2} className="mr-1.5" />
+					Upload
+					<input
+						onChange={handleUploadOptionClick}
+						onClick={e => e.stopPropagation()}
+						className="absolute top-0 block w-full opacity-0 cursor-pointer pin-r pin-t"
+						type="file"
+						name="documents[]"
+						accept=".docx,.doc,.odt,.pptx,.xlsx,.csv,.tsv,.eml,.msg,.rtf,.epub,.html,.xml,.pdf,.png,.jpg"
+					/>
+				</Button>
+				<Button variant="ghost" size="xs" onClick={handleMendeleyImportClick}>
+					<FolderInput size={18} strokeWidth={1.2} className="mr-1.5" />
+					Mendeley
+				</Button>
+				<Button variant="ghost" size="xs" onClick={handleZoteroImportClick}>
+					<FolderInput size={18} strokeWidth={1.2} className="mr-1.5" />
+					Zotero
+				</Button>
+			</div>
+		);
+	}
 
 	return (
 		<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -117,10 +142,6 @@ const AddReferenceDropdown = () => {
 					<FolderInput size={18} strokeWidth={1.6} className="mr-2" />
 					Zotero Import
 				</DropdownMenuItem>
-				{/* <DropdownMenuItem onClick={handleZoteroImportClick} disabled>
-					<FolderDown size={18} strokeWidth={1.6} className="mr-2" />
-					Import BibTeX
-				</DropdownMenuItem> */}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
