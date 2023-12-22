@@ -20,7 +20,7 @@ const CommentContainer = ({ children }: Props) => {
 						? 'w-[280px]'
 						: 'w-[300px]'
 					: 'w-0 overflow-hidden',
-				'flex-shrink-0 relative h-screen',
+				'flex-shrink-0 relative h-full',
 			)}
 		>
 			{children}

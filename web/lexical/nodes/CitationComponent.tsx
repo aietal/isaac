@@ -76,7 +76,7 @@ const CitationComponent = ({ citation, inText, nodeKey, page }: Props) => {
 				<PopoverTrigger asChild>
 					<TooltipTrigger asChild>
 						<span
-							className="hover:bg-accent rounded-md px-1 py-1 cursor-pointer"
+							className="hover:bg-muted rounded-md p-1 cursor-pointer"
 							onClick={() => {
 								if (citation.sourceType === 'reference') {
 									openPanel(Panel.REFERENCES);
@@ -96,7 +96,7 @@ const CitationComponent = ({ citation, inText, nodeKey, page }: Props) => {
 				</PopoverTrigger>
 				{/* //TODO: Open menu on hover whether to open pdf or preview */}
 				<TooltipPortal>
-					<TooltipContent className="w-[300px]">
+					<TooltipContent className="max-w-xs text-justify text-muted-foreground">
 						<span>{citation.title}</span>
 					</TooltipContent>
 				</TooltipPortal>

@@ -37,6 +37,7 @@ import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useState } from 'react';
 import { CitationNode } from './nodes/CitationNode';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
+import BibliographyCitationPlugin from './plugins/BibliographyCitationPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import { CollapsibleContainerNode } from './plugins/CollapsiblePlugin/CollapsibleContainerNode';
 import { CollapsibleContentNode } from './plugins/CollapsiblePlugin/CollapsibleContentNode';
@@ -146,6 +147,7 @@ const EditorLexical = ({ documentId, active }: Props) => {
 	const [floatingAnchorElem, setFloatingAnchorElem] =
 		useState<HTMLDivElement | null>(null);
 	const showDocumentComments = useUIStore(s => s.showDocumentComments);
+
 	const onRef = (_floatingAnchorElem: HTMLDivElement) => {
 		if (_floatingAnchorElem !== null) {
 			setFloatingAnchorElem(_floatingAnchorElem);
@@ -230,7 +232,7 @@ const EditorLexical = ({ documentId, active }: Props) => {
 				<div
 					className={clsx(
 						!active ? 'hidden h-0' : 'h-full',
-						'dark:bg-black bg-white editor-pdf flex flex-col items-center relative w-full  pr-6',
+						'dark:bg-black bg-white editor-pdf flex flex-col items-center relative w-full pr-6',
 					)}
 				>
 					<RichTextPlugin
@@ -246,7 +248,7 @@ const EditorLexical = ({ documentId, active }: Props) => {
 									<ToolbarV2Plugin />
 									<GrammarlyEditorPlugin
 										className={clsx(
-											'grow w-full prose  px-4 md:px-6 pb-28 relative dark:prose-invert',
+											'grow w-full prose px-4 md:px-6 pb-1 relative dark:prose-invert',
 											showDocumentComments ? 'max-w-3xl' : 'max-w-5xl',
 										)}
 										config={{
@@ -262,10 +264,9 @@ const EditorLexical = ({ documentId, active }: Props) => {
 							</div>
 						}
 					/>
-
+					<BibliographyCitationPlugin />
 					<MarkdownShortcutPlugin transformers={TRANSFORMERS} />
 					<RestoreStatePlugin document={document} saveDocument={saveDocument} />
-
 					{active && (
 						<>
 							<TabIndentationPlugin />
